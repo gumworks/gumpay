@@ -1,0 +1,9 @@
+app2app/GumPayApp2App/obj/
+app2app/GumPayApp2App.iOS/obj/iPhone/Debug/device-builds/iphone13.1-14.4.2/ibtool-manifests/LaunchScreen.storyboardc
+app2app/GumPayApp2App.iOS/bin/
+app2app/GumPayApp2App.iOS/obj/
+app2app/GumPayApp2App.Android/obj/
+app2app/GumPayApp2App/bin/
+app2app/GumPayApp2App.Android/GumPayApp2App.Android.csproj.user
+app2app/GumPayApp2App.Android/bin/
+*.user

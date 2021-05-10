@@ -2,7 +2,7 @@
 /*
  * Plugin Name: WooCommerce GumPay Payment Gateway
  * Plugin URI: 
- * Description: Take GumPay payments on your store.
+ * Description: Accept mobile payment on your website, support all major credit cards, Apple Pay, or even your in-store voucher on GumPay. Contact GumPay customer support team to obtain API key.
  * Author: Gumwork LLC.
  * Author URI: http://gumpay.app
  * Version: 1.0.0
@@ -70,7 +70,7 @@ function gumpay_init_gateway_class() {
             $this->id = 'woocommerce-gumpay-payments'; // payment gateway plugin ID
             $this->has_fields = false; // in case you need a custom credit card form
             $this->method_title = 'GumPay Payment Gateway';
-            $this->method_description = 'Description of GumPay Payment Gateway'; // will be displayed on the options page
+            $this->method_description = 'GumPay allows small shops to easily get paid by support all major credit cards and Apple Pay. User simple scan a QR code to pay you.'; // will be displayed on the options page
          
             // gateways can support subscriptions, refunds, saved payment methods,
             // but in this tutorial we begin with simple payments

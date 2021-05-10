@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <img id="imgQR" src="" width="400"></div>
+          <script lang="javascript">
+            let checkPaymentInterval;
+            let orderNum = Math.floor(Date.now() / 1000);
+            $(document).ready(function(){
+                $.post( "demo.php", { action: "getqr", order: orderNum, amount: 1, returnUrl: window.location.protocol + '://' + window.location.hostname + '/demo.php?ordercomplete=' + orderNum })
+                .done(function( data ) {
+                    $('#imgQR').attr('src',data.qrimage);
+
+                    checkPaymentInterval = setInterval(function () {
+                        $.post('demo.php', { action: "checkpayment", order: orderNum }, function (result) {
+                            if (result.result) {
+                                clearInterval(checkPaymentInterval);
+                                alert('Payment complete');
+                            }
+                        });
+                    }, 5000);
+                });
+
+
+            });
+        </script>
+    </body>
+</html>

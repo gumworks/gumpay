@@ -59,7 +59,6 @@ function gumpay_init_gateway_class() {
         const GUMPAY_TRANSACTION_ID_META_KEY = '_gpcp_gumpay_transaction_id';
         const GUMPAY_ORDER_LINK = '_gpcp_gumpay_order_link';
 
-        const GUMPAY_TEST_ENVIRONMENT_URL = 'https://gumpaywebservicestage.azurewebsites.net/';
         const GUMPAY_ENVIRONMENT_URL = 'https://gumpaywebservice.azurewebsites.net/';
         
  		/**
@@ -86,8 +85,7 @@ function gumpay_init_gateway_class() {
             $this->title = $this->get_option( 'title' );
             $this->description = '<img src="' . apply_filters( 'woocommerce_gateway_icon', $plugin_dir.'assets/images/GP-web-button1-2.png' ) . '">';
             $this->enabled = $this->get_option( 'enabled' );
-            $this->testmode = 'yes' === $this->get_option( 'testmode' );
-            $this->private_key = $this->testmode ? $this->get_option( 'test_private_key' ) : $this->get_option( 'private_key' );
+            $this->private_key = $this->get_option( 'private_key' );
             $this->order_status    = $this->get_option( 'order_status' );
 	
             // This action hook saves the settings
@@ -132,18 +130,6 @@ function gumpay_init_gateway_class() {
                     'default'     => 'wc-processing',
                     'description' => __( 'The default order status if this gateway used in payment.', 'woocommerce-custom-payment-gateway' ),
                 ),
-                'testmode' => array(
-                    'title'       => 'Test mode',
-                    'label'       => 'Enable Test Mode',
-                    'type'        => 'checkbox',
-                    'description' => 'Place the payment gateway in test mode using test API keys.',
-                    'default'     => 'yes',
-                    'desc_tip'    => true,
-                ),
-                'test_private_key' => array(
-                    'title'       => 'Test Private Key',
-                    'type'        => 'password',
-                ),
                 'private_key' => array(
                     'title'       => 'Live Private Key',
                     'type'        => 'password'
@@ -170,9 +156,8 @@ function gumpay_init_gateway_class() {
 		 */
 		public function process_payment( $order_id ) {
             $this->init_settings();
-            $this->testmode = 'yes' === $this->get_option( 'testmode' );
-            $this->private_key = $this->testmode ? $this->get_option( 'test_private_key' ) : $this->get_option( 'private_key' );
-            $this->endpoint_url = $this->testmode ? WC_Gumpay_Gateway::GUMPAY_TEST_ENVIRONMENT_URL : WC_Gumpay_Gateway::GUMPAY_ENVIRONMENT_URL;
+            $this->private_key = $this->get_option( 'private_key' );
+            $this->endpoint_url = WC_Gumpay_Gateway::GUMPAY_ENVIRONMENT_URL;
             $order = wc_get_order( $order_id );
            
             $payload = array(
@@ -245,9 +230,8 @@ function gumpay_init_gateway_class() {
          */
         public function order_received_text( $text, $order ) {
             $this->init_settings();
-            $this->testmode = 'yes' === $this->get_option( 'testmode' );
-            $this->private_key = $this->testmode ? $this->get_option( 'test_private_key' ) : $this->get_option( 'private_key' );
-            $this->endpoint_url = $this->testmode ? WC_Gumpay_Gateway::GUMPAY_TEST_ENVIRONMENT_URL : WC_Gumpay_Gateway::GUMPAY_ENVIRONMENT_URL;
+            $this->private_key = $this->get_option( 'private_key' );
+            $this->endpoint_url = WC_Gumpay_Gateway::GUMPAY_ENVIRONMENT_URL;
             
             if ( $order && $this->id === $order->get_payment_method() ) {
                 if($order->get_status() == 'pending')

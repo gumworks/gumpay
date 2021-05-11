@@ -12,8 +12,7 @@ namespace GumPayApp2App
 {
     public static class GumPayApp2AppHelper
     {
-        const string GUMPAY_TEST_ENVIRONMENT_URL = "https://gumpaywebservicestage.azurewebsites.net/";
-        const string GUMPAY_ENVIRONMENT_URL = "https://gumpaywebservice.azurewebsites.net/";
+        const string GUMPAY_ENVIRONMENT_URL = "https://api.gumpay.app/";
 
         /// <summary>
         /// GetOrderLink return a GumPay url that allow user to pay our order. This url can be used in Android/IOS and it will launch GumPay app if it is installed or open a landing page where user can download app and process payment
@@ -26,7 +25,7 @@ namespace GumPayApp2App
         /// <returns>Returns string containing the url we need redirect user to</returns>
         public static async Task<string> GetOrderLink(string uniqueKey, string externalOrderId, decimal amount, string returnUrl, CancellationToken cancellationToken)
         {
-            var endpointUrl = GUMPAY_TEST_ENVIRONMENT_URL + "api/order/getorderlink";
+            var endpointUrl = GUMPAY_ENVIRONMENT_URL + "api/order/getorderlink";
             var response = await ExecuteHttpPostAsync<GenericApiResponse<string>>(endpointUrl, new[]
             {
                 new KeyValuePair<string, string>("uniqueKey", uniqueKey),
@@ -52,7 +51,7 @@ namespace GumPayApp2App
         /// <returns>It returns the GumPay transactionId if it was succesfully paid. It returns an empty Guid if the transaction was not paid 00000000-0000-0000-0000-000000000000</returns>
         public static async Task<Guid> CheckOrderComplete(string uniqueKey, string externalOrderId, CancellationToken cancellationToken)
         {
-            var endpointUrl = GUMPAY_TEST_ENVIRONMENT_URL + "api/order/checkordercomplete";
+            var endpointUrl = GUMPAY_ENVIRONMENT_URL + "api/order/checkordercomplete";
             var response = await ExecuteHttpPostAsync<GenericApiResponse<Guid>>(endpointUrl, new[]
             {
                 new KeyValuePair<string, string>("uniqueKey", uniqueKey),

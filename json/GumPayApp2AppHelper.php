@@ -2,8 +2,7 @@
 
 class GumPayApp2AppHelper
 {
-    public const GUMPAY_TEST_ENVIRONMENT_URL = 'https://gumpaywebservicestage.azurewebsites.net/';
-    public const GUMPAY_ENVIRONMENT_URL = 'https://gumpaywebservice.azurewebsites.net/';
+    public const GUMPAY_ENVIRONMENT_URL = 'https://api.gumpay.app/';
 
     /// <summary>
     /// GetOrderLink return a GumPay url that allow user to pay our order. This url can be used in Android/IOS and it will launch GumPay app if it is installed or open a landing page where user can download app and process payment
@@ -15,7 +14,7 @@ class GumPayApp2AppHelper
     /// <returns>Returns string containing the url we need redirect user to</returns>
     public function GetOrderLink($uniqueKey, $externalOrderId, $amount, $returnUrl)
     {
-        $endpointUrl = $this::GUMPAY_TEST_ENVIRONMENT_URL . "api/order/getorderlink";
+        $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getorderlink";
         $curl = new \CurlPost($endpointUrl);
         try {
             // execute the request
@@ -49,7 +48,7 @@ class GumPayApp2AppHelper
     /// <returns>Returns string containing the url we need redirect user to</returns>
     public function GetOrderQR($uniqueKey, $externalOrderId, $amount, $returnUrl)
     {
-        $endpointUrl = $this::GUMPAY_TEST_ENVIRONMENT_URL . "api/order/getorderqr";
+        $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getorderqr";
         $curl = new \CurlPost($endpointUrl);
         try {
             // execute the request
@@ -81,7 +80,7 @@ class GumPayApp2AppHelper
     /// <returns>It returns the GumPay transactionId if it was succesfully paid. It returns an empty Guid if the transaction was not paid 00000000-0000-0000-0000-000000000000</returns>
     public function CheckOrderComplete($uniqueKey, $externalOrderId)
     {
-        $endpointUrl = $this::GUMPAY_TEST_ENVIRONMENT_URL . "api/order/checkordercomplete";
+        $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/checkordercomplete";
         $curl = new \CurlPost($endpointUrl);
         try {
             // execute the request

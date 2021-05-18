@@ -59,7 +59,7 @@ function gumpay_init_gateway_class() {
         const GUMPAY_TRANSACTION_ID_META_KEY = '_gpcp_gumpay_transaction_id';
         const GUMPAY_ORDER_LINK = '_gpcp_gumpay_order_link';
 
-        const GUMPAY_ENVIRONMENT_URL = 'https://gumpaywebservice.azurewebsites.net/';
+        const GUMPAY_ENVIRONMENT_URL = 'https://api.gumpay.app/';
         
  		/**
  		 * Class constructor, more about it in Step 3

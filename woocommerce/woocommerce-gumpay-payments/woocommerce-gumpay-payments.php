@@ -260,14 +260,14 @@ function gumpay_init_gateway_class() {
                     }
                     else{
                         $gumpayResponse = json_decode($gumpayResponse, false);
-                        if($gumpayResponse->Success)
+                        if($gumpayResponse->Success && !empty($gumpayResponse->Data))
                         {
                             $order->update_meta_data( WC_Gumpay_Gateway::GUMPAY_TRANSACTION_ID_META_KEY, $gumpayResponse->Data );
                             $order->update_status( $this->order_status );
                             $order->save();
                             return 'Thanks for pay with GumPay. Your order will be served soon';
                         }
-                        return 'You can pay with GumPay following this link. ' . $order->get_meta_data(WC_Gumpay_Gateway::GUMPAY_ORDER_LINK);
+                        return 'You can pay with GumPay following this link. <a href="' . $order->get_meta(WC_Gumpay_Gateway::GUMPAY_ORDER_LINK) .'"><img src="' . apply_filters( 'woocommerce_gateway_icon', plugin_dir_url(__FILE__).'assets/images/GP-web-button1-2.png' ) . '"></a>';
                     }
                 }
             }

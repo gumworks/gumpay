@@ -11,7 +11,7 @@ if(isset($_POST['action']))
         case 'getqr':
             {
                 $gumpayHelper = new GumPayApp2AppHelper();
-                $url = $gumpayHelper->GetOrderQR(UniqueKey, $_POST['order'], $_POST['amount'], $_POST['returnUrl']);
+                $url = $gumpayHelper->GetOrderQR(UniqueKey, $_POST['order'], $_POST['amount'], $_POST['returnUrl'], 60);
                 header('Content-type: application/json');
                 echo json_encode(array("qrimage" => $url));
                 break;

@@ -21,9 +21,10 @@ namespace GumPayApp2App
         /// <param name="externalOrderId">The order Id in our Shop system, it shoudl be unique to identify this order and need be used later again to retrieve payment status</param>
         /// <param name="amount">The total amount of the order to be paid</param>
         /// <param name="returnUrl">This is the callback url that GumPay app will call once payment completed. It can be our deep app link url like in this example, or some backend url where we will check the payment. We recomend to include in this url the order id in the Shop to make it easy identify and verify the status of the transaction</param>
+        /// <param name="minutesToExpire">This is the minutes that link/qr will be valid</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Returns string containing the url we need redirect user to</returns>
-        public static async Task<string> GetOrderLink(string uniqueKey, string externalOrderId, decimal amount, string returnUrl, CancellationToken cancellationToken)
+        public static async Task<string> GetOrderLink(string uniqueKey, string externalOrderId, decimal amount, string returnUrl, int minutesToExpire, CancellationToken cancellationToken)
         {
             var endpointUrl = GUMPAY_ENVIRONMENT_URL + "api/order/getorderlink";
             var response = await ExecuteHttpPostAsync<GenericApiResponse<string>>(endpointUrl, new[]
@@ -32,6 +33,7 @@ namespace GumPayApp2App
                 new KeyValuePair<string, string>("externalOrderId", externalOrderId),
                 new KeyValuePair<string, string>("amount", amount.ToString(new CultureInfo("en-US", false))),
                 new KeyValuePair<string, string>("returnUrl", returnUrl),
+                new KeyValuePair<string, string>("minutesToExpire", minutesToExpire),
             }, cancellationToken);
             if (response.Success)
             {

@@ -11,8 +11,9 @@ class GumPayApp2AppHelper
     /// <param name="externalOrderId">The order Id in our Shop system, it shoudl be unique to identify this order and need be used later again to retrieve payment status</param>
     /// <param name="amount">The total amount of the order to be paid</param>
     /// <param name="returnUrl">This is the callback url that GumPay app will call once payment completed. It can be our deep app link url like in this example, or some backend url where we will check the payment. We recomend to include in this url the order id in the Shop to make it easy identify and verify the status of the transaction</param>
+    /// <param name="minutesToExpire">This is the minutes that link/qr will be valid</param>
     /// <returns>Returns string containing the url we need redirect user to</returns>
-    public function GetOrderLink($uniqueKey, $externalOrderId, $amount, $returnUrl)
+    public function GetOrderLink($uniqueKey, $externalOrderId, $amount, $returnUrl, $minutesToExpire)
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getorderlink";
         $curl = new \CurlPost($endpointUrl);
@@ -23,6 +24,7 @@ class GumPayApp2AppHelper
                 "externalOrderId" => $externalOrderId,
                 "amount" => $amount,
                 "returnUrl" => $returnUrl,
+                "minutesToExpire" => $minutesToExpire,
             ));
             $response = json_decode($responseStr);
             if ($response->Success)
@@ -45,8 +47,9 @@ class GumPayApp2AppHelper
     /// <param name="externalOrderId">The order Id in our Shop system, it shoudl be unique to identify this order and need be used later again to retrieve payment status</param>
     /// <param name="amount">The total amount of the order to be paid</param>
     /// <param name="returnUrl">This is the callback url that GumPay app will call once payment completed. It can be our deep app link url like in this example, or some backend url where we will check the payment. We recomend to include in this url the order id in the Shop to make it easy identify and verify the status of the transaction</param>
+    /// <param name="minutesToExpire">This is the minutes that link/qr will be valid</param>
     /// <returns>Returns string containing the url we need redirect user to</returns>
-    public function GetOrderQR($uniqueKey, $externalOrderId, $amount, $returnUrl)
+    public function GetOrderQR($uniqueKey, $externalOrderId, $amount, $returnUrl, $minutesToExpire)
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getorderqr";
         $curl = new \CurlPost($endpointUrl);
@@ -57,6 +60,7 @@ class GumPayApp2AppHelper
                 "externalOrderId" => $externalOrderId,
                 "amount" => $amount,
                 "returnUrl" => $returnUrl,
+                "minutesToExpire" => $minutesToExpire,
             ));
             $response = json_decode($responseStr);
             if ($response->Success)

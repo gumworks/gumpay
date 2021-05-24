@@ -24,7 +24,7 @@ namespace GumPayApp2App
             var order = Guid.NewGuid().ToString().Replace("-", "");
             MessagingCenter.Send(this, "logmessage", "Requesting GumPay link for order " + order);
 
-            var urlLink = await GumPayApp2AppHelper.GetOrderLink(App.shopKey, order, 1, "gumpay2app://ordercomplete/" + order, new System.Threading.CancellationToken());
+            var urlLink = await GumPayApp2AppHelper.GetOrderLink(App.shopKey, order, 1, "gumpay2app://ordercomplete/" + order, 60, new System.Threading.CancellationToken());
             MessagingCenter.Send(Application.Current, "logmessage", "Opening external url " + urlLink);
             await Launcher.OpenAsync(urlLink);
         }

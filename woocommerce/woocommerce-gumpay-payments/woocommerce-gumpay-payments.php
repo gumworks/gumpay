@@ -5,7 +5,7 @@
  * Description: Accept mobile payment on your website, support all major credit cards, Apple Pay, or even your in-store voucher on GumPay. Contact GumPay customer support team to obtain API key.
  * Author: Gumwork LLC.
  * Author URI: http://gumpay.app
- * Version: 1.0.0
+ * Version: 1.0.1
  *
  */
 
@@ -164,7 +164,8 @@ function gumpay_init_gateway_class() {
                 "uniqueKey"     => $this->private_key, 
                 "externalOrderId" => $order->get_order_number(),
                 "amount"        => $order->order_total,
-                "returnUrl" =>  $this->get_return_url( $order )
+                "returnUrl" =>  $this->get_return_url( $order ),
+                "minutesToExpire" => get_option( 'woocommerce_hold_stock_minutes' ) 
             );
             $response = wp_remote_post( $this->endpoint_url . 'api/order/getorderlink', 
                 array(

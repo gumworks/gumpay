@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <a href="" id="alink" target="_blank">click here</div>
+          <script lang="javascript">
+            let checkPaymentInterval;
+            let orderNum = Math.floor(Date.now() / 1000);
+            $(document).ready(function(){
+                $.post( "demo.php", { action: "getpreauthlink", returnUrl: window.location.protocol + '://' + window.location.hostname + '/demo.php?action=preauth' })
+                .done(function( data ) {
+                    alert(data.link);
+                    $('#alink').attr('href', data.link);
+                });
+
+
+            });
+        </script>
+    </body>
+</html>

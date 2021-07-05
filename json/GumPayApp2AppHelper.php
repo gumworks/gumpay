@@ -17,27 +17,22 @@ class GumPayApp2AppHelper
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getorderlink";
         $curl = new \CurlPost($endpointUrl);
-        try {
-            // execute the request
-            $responseStr = $curl(array(
-                "uniqueKey" => $uniqueKey,
-                "externalOrderId" => $externalOrderId,
-                "amount" => $amount,
-                "returnUrl" => $returnUrl,
-                "minutesToExpire" => $minutesToExpire,
-            ));
-            $response = json_decode($responseStr);
-            if ($response->Success)
-            {
-                return $response->Data;
-            }
-            else
-            {
-                throw new RuntimeException("Error", $response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
-            }
-        } catch (\RuntimeException $ex) {
-            // catch errors
-            die(sprintf('Http error %s with code %d', $ex->getMessage(), $ex->getCode()));
+        // execute the request
+        $responseStr = $curl(array(
+            "uniqueKey" => $uniqueKey,
+            "externalOrderId" => $externalOrderId,
+            "amount" => $amount,
+            "returnUrl" => $returnUrl,
+            "minutesToExpire" => $minutesToExpire,
+        ));
+        $response = json_decode($responseStr);
+        if ($response->Success)
+        {
+            return $response->Data;
+        }
+        else
+        {
+            throw new \Exception($response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
         }
     }
      /// <summary>
@@ -53,27 +48,22 @@ class GumPayApp2AppHelper
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getorderqr";
         $curl = new \CurlPost($endpointUrl);
-        try {
-            // execute the request
-            $responseStr = $curl(array(
-                "uniqueKey" => $uniqueKey,
-                "externalOrderId" => $externalOrderId,
-                "amount" => $amount,
-                "returnUrl" => $returnUrl,
-                "minutesToExpire" => $minutesToExpire,
-            ));
-            $response = json_decode($responseStr);
-            if ($response->Success)
-            {
-                return $response->Data;
-            }
-            else
-            {
-                throw new RuntimeException("Error", $response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
-            }
-        } catch (\RuntimeException $ex) {
-            // catch errors
-            die(sprintf('Http error %s with code %d', $ex->getMessage(), $ex->getCode()));
+        // execute the request
+        $responseStr = $curl(array(
+            "uniqueKey" => $uniqueKey,
+            "externalOrderId" => $externalOrderId,
+            "amount" => $amount,
+            "returnUrl" => $returnUrl,
+            "minutesToExpire" => $minutesToExpire,
+        ));
+        $response = json_decode($responseStr);
+        if ($response->Success)
+        {
+            return $response->Data;
+        }
+        else
+        {
+            throw new \Exception($response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
         }
     }
     /// <summary>
@@ -86,31 +76,165 @@ class GumPayApp2AppHelper
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/checkordercomplete";
         $curl = new \CurlPost($endpointUrl);
-        try {
-            // execute the request
-            $responseStr = $curl(array(
-                "uniqueKey" => $uniqueKey,
-                "externalOrderId" => $externalOrderId,
-            ));
-            $response = json_decode($responseStr);
-            if ($response->Success)
+        // execute the request
+        $responseStr = $curl(array(
+            "uniqueKey" => $uniqueKey,
+            "externalOrderId" => $externalOrderId,
+        ));
+        $response = json_decode($responseStr);
+        if ($response->Success)
+        {
+            if(isset($response->Data))
             {
-                if(isset($response->Data))
-                {
-                   return $response->Data;
-                }
-                else
-                {
-                    return false;
-                }
+                return $response->Data;
             }
             else
             {
-                throw new RuntimeException("Error", $response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
+                return false;
             }
-        } catch (\RuntimeException $ex) {
-            // catch errors
-            die(sprintf('Http error %s with code %d', $ex->getMessage(), $ex->getCode()));
+        }
+        else
+        {
+            throw new \Exception($response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
+        }
+    }
+
+    /// <summary>
+    /// GetPreauthLink return a GumPay url that allow user to authorize automatic payments on current shop. This url can be used in Android/IOS and it will launch GumPay app if it is installed or open a landing page where user can download app and authorize payments
+    /// </summary>
+    /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
+    /// <param name="returnUrl">This is the callback url that GumPay app will call once preauth completed. It can be our deep app link url like in this example, or some backend url where we will check the payment. We recomend will return in this url a parameter "userid" that will containe the GumPay userid that preautorized payments for your shop</param>
+    /// <param name="minutesToExpire">This is the minutes that link/qr will be valid</param>
+    /// <returns>Returns string containing the url we need redirect user to</returns>
+    public function GetPreauthLink($uniqueKey, $returnUrl, $minutesToExpire)
+    {
+        $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getpreauthlink";
+        $curl = new \CurlPost($endpointUrl);
+    
+        // execute the request
+        $responseStr = $curl(array(
+            "uniqueKey" => $uniqueKey,
+            "returnUrl" => $returnUrl,
+            "minutesToExpire" => $minutesToExpire,
+        ));
+        $response = json_decode($responseStr);
+        if ($response->Success)
+        {
+            return $response->Data;
+        }
+        else
+        {
+            throw new \Exception($response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
+        }
+    }
+    /// <summary>
+    /// PreauthorizeTransaction
+    /// </summary>
+    /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
+    /// <param name="userId"></param>
+    /// <param name="currency">For now, only 'HKD' supported</param>
+    /// <param name="amount"></param>
+    /// <returns>Returns string containing the token for the transaction</returns>
+    public function PreauthorizeTransaction($uniqueKey, $userId, $currency, $amount)
+    {
+        $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/preauthorizetransaction";
+        $curl = new \CurlPost($endpointUrl);
+        // execute the request
+        $responseStr = $curl(array(
+            "uniqueKey" => $uniqueKey,
+            "userId" => $userId,
+            "currency" => $currency,
+            "amount" => $amount,
+        ));
+        $response = json_decode($responseStr);
+        if ($response->Success)
+        {
+            return $response->Data;
+        }
+        else
+        {
+            throw new \Exception($response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
+        }
+    }
+    /// <summary>
+    /// PreauthorizeTransaction
+    /// </summary>
+    /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
+    /// <param name="userId"></param>
+    /// <param name="token"></param>
+    /// <param name="currency">For now, only 'HKD' supported</param>
+    /// <param name="amount"></param>
+    /// <returns>Returns string containing the token for the transaction</returns>
+    public function CaptureTransaction($uniqueKey, $userId, $token, $currency, $amount)
+    {
+        $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/capturetransaction";
+        $curl = new \CurlPost($endpointUrl);
+        // execute the request
+        $responseStr = $curl(array(
+            "uniqueKey" => $uniqueKey,
+            "userId" => $userId,
+            "token" => $token,
+            "currency" => $currency,
+            "amount" => $amount,
+        ));
+        $response = json_decode($responseStr);
+        if ($response->Success)
+        {
+            return $response->Data;
+        }
+        else
+        {
+            throw new \Exception($response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
+        }
+    }
+     /// <summary>
+    /// CancelTransaction
+    /// </summary>
+    /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
+    /// <param name="userId"></param>
+    /// <param name="token"></param>
+    /// <returns>Returns string containing the token for the transaction</returns>
+    public function CancelTransaction($uniqueKey, $userId, $token)
+    {
+        $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/canceltransaction";
+        $curl = new \CurlPost($endpointUrl);
+        // execute the request
+        $responseStr = $curl(array(
+            "uniqueKey" => $uniqueKey,
+            "userId" => $userId,
+            "token" => $token,
+        ));
+        $response = json_decode($responseStr);
+        if ($response->Success)
+        {
+            return $response->Data;
+        }
+        else
+        {
+            throw new \Exception($response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
+        }
+    }
+    /// <summary>
+    /// GetPreauthorizedUsers
+    /// </summary>
+    /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
+    /// <returns>Returns list of preauthorized userIds</returns>
+    public function GetPreauthorizedUsers($uniqueKey)
+    {
+        $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getpreauthorizedusers";
+        $curl = new \CurlPost($endpointUrl);
+        // execute the request
+        $responseStr = $curl(array(
+            "uniqueKey" => $uniqueKey,
+        ));
+        $response = json_decode($responseStr);
+        if ($response->Success)
+        {
+            return $response->Data;
+        }
+        else
+        {
+            throw new \Exception($response != null ? $response->StatusMessage : "Comunication with server failed, please try again");
         }
     }
 }

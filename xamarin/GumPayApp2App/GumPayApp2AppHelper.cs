@@ -33,7 +33,7 @@ namespace GumPayApp2App
                 new KeyValuePair<string, string>("externalOrderId", externalOrderId),
                 new KeyValuePair<string, string>("amount", amount.ToString(new CultureInfo("en-US", false))),
                 new KeyValuePair<string, string>("returnUrl", returnUrl),
-                new KeyValuePair<string, string>("minutesToExpire", minutesToExpire),
+                new KeyValuePair<string, string>("minutesToExpire", minutesToExpire.ToString()),
             }, cancellationToken);
             if (response.Success)
             {

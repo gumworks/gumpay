@@ -1,0 +1,112 @@
+<html>
+    <head>
+        <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <form style="margin: 20px;">
+            <div id="step1">
+                <h3>Step 1 - Insert your API Key and retrieve both preautorization link and list of users that are preauthorized</h3>
+                <label for="userid">Shop API Key</label><input type="text" id="uniquekey" size="200" value="cGwkQgH4TXofJFplxDAFe0PUGWaCZo0IFnIQMncwuBh1VnLQRhwmWHujaxU95sBYGftC7bMoeqjRPVwQEKf6gpOr0RMYuLAsfN4Ax7g9ukjDRgJyRVh8VwCBYCh7QRl2"/>
+                <button type="button" onclick="javascript:loadpreauthorizedusers()">Send</button>
+                <a id="alink"></a>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div id="step2" style="display: none;">
+                <h3>Step 2 - Choose a user and set amount that will be preauthorized, this will return a token to identify this preauthorization</h3>
+                <label for="userid">UserId</label><select id="userid"/>
+                <label for="amount">Amount</label><input type="text" id="amount" value="50"/>
+                <button type="button" onclick="javascript:preauthtransaction()">Send</button>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div id="step3" style="display: none;">
+                <h3>Step 3 - with the token received, you are able to capture the payment or cancel it</h3>
+                <input type="text" id="token" value=""/>
+                <label for="finalamount">Final Amount</label><input type="text" id="finalamount" value="20"/>
+                <button type="button" onclick="javascript:capturetransaction()">Capture</button>
+                <button type="button" onclick="javascript:canceltransaction()">Cancel</button>
+            </div>
+        </form>
+          <script lang="javascript">
+              function loadpreauthorizedusers()
+              {
+
+                $.post( "demo.php", { action: "getpreauthlink",  uniquekey: $('#uniquekey').val(), returnUrl: window.location.protocol + '://' + window.location.hostname + '/demo.php?action=preauth' })
+                .done(function( data ) {
+                    $('#alink').attr('href', data.link);
+                    $('#alink').text(data.link);
+                });
+                $.post( "demo.php", { action: "loadpreauthorizedusers", uniquekey: $('#uniquekey').val() })
+                .done(function( data ) {
+                    if(data.result)
+                    {
+                        $.each(data.users, function(ix, user){
+                            $('#userid').append(new Option(user.ShortName, user.UserId));
+                        });
+                        $('#step2').show();
+                    }
+                    else
+                    {
+                        alert(data.result_text);
+                    }
+                    
+                });
+
+              }
+              function preauthtransaction()
+              {
+                $.post( "demo.php", { action: "preauthorizetransaction", uniquekey: $('#uniquekey').val(), userId: $('#userid').val() , amount: $('#amount').val() })
+                .done(function( data ) {
+                    if(data.result)
+                    {
+                        alert('Preauthorization Token Received: '  + data.token);
+                        $('#token').val(data.token);
+                        $('#step3').show();
+                    }
+                    else
+                    {
+                        alert(data.result_text);
+                    }
+                });
+
+              }
+
+              function capturetransaction()
+              {
+                $.post( "demo.php", { action: "capturetransaction", uniquekey: $('#uniquekey').val(), token: $('#token').val(),  userId: $('#userid').val(), amount: $('#finalamount').val() })
+                .done(function( data ) {
+                    if(data.result)
+                    {
+                        alert("Transaction Captured, Payment processed OK!");
+                    }
+                    else
+                    {
+                        alert(data.result_text);
+                    }
+                });
+
+              }
+              function canceltransaction()
+              {
+                $.post( "demo.php", { action: "canceltransaction", uniquekey: $('#uniquekey').val(), token: $('#token').val(),  userId: $('#userid').val() })
+                .done(function( data ) {
+                    if(data.result)
+                    {
+                        alert("Preauthorized transaction canceled OK!");
+                    }
+                    else
+                    {
+                        alert(data.result_text);
+                    }
+                });
+
+              }
+</script>
+    </body>
+</html>

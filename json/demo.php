@@ -12,7 +12,7 @@ if(isset($_POST['action']))
             case 'getqr':
                 {
                     $gumpayHelper = new GumPayApp2AppHelper();
-                    $url = $gumpayHelper->GetOrderQR(UniqueKey, $_POST['order'], $_POST['amount'], $_POST['returnUrl'], 60);
+                    $url = $gumpayHelper->GetOrderQR($_POST['uniquekey'], $_POST['order'], $_POST['amount'], $_POST['returnUrl'], 60);
                     header('Content-type: application/json');
                     if($url)
                     {
@@ -27,7 +27,7 @@ if(isset($_POST['action']))
             case 'checkpayment':
                 {
                     $gumpayHelper = new GumPayApp2AppHelper();
-                    $result = $gumpayHelper->CheckOrderComplete(UniqueKey, $_POST['order']);
+                    $result = $gumpayHelper->CheckOrderComplete($_POST['uniquekey'], $_POST['order']);
                     header('Content-type: application/json');
                     if($result)
                     {

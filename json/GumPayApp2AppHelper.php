@@ -1,5 +1,4 @@
 <?php
-
 class GumPayApp2AppHelper
 {
     public const GUMPAY_ENVIRONMENT_URL = 'https://api.gumpay.app/';

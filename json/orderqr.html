@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <form style="margin: 20px;">
+            <div id="step1">
+                <h3>Step 1 - Insert your API Key, order number and amount to be paid</h3>
+                <label for="userid">Shop API Key</label><input type="text" id="uniquekey" size="200" value=""/>
+                <br>
+                <label for="ordernum">Order Number</label><input type="text" id="ordernum" size="50" value=""/>
+                <br>
+                <label for="amount">Amount</label><input type="text" id="amount" size="50" value="20"/>
+                <br>
+                <button type="button" onclick="javascript:loadqr()">Send</button>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div id="step2" style="display: none;">
+                <h3>Step 2 - Sacn and pay with this QR, you will get here feedback of payment</h3>
+                <img id="imgQR" src="" width="400"></div>
+            </div>
+        </form>
+          <script lang="javascript">
+            let checkPaymentInterval;
+            let orderNum = Math.floor(Date.now() / 1000);
+            $('#ordernum').val(orderNum);
+            function loadqr()
+            {
+                $('#step2').show();
+                $.post( "demo.php", { action: "getqr", uniquekey: $('#uniquekey').val(), order: $('#ordernum').val(), amount: $('#amount').val(), returnUrl: window.location.protocol + '://' + window.location.hostname + '/demo.php?ordercomplete=' + orderNum })
+                .done(function( data ) {
+                    $('#imgQR').attr('src',data.qrimage);
+
+                    checkPaymentInterval = setInterval(function () {
+                        $.post('demo.php', { action: "checkpayment", uniquekey: $('#uniquekey').val(), order: $('#ordernum').val() }, function (result) {
+                            if (result.result) {
+                                clearInterval(checkPaymentInterval);
+                                alert('Payment complete');
+                            }
+                        });
+                    }, 5000);
+                });
+            }
+        </script>
+    </body>
+</html>

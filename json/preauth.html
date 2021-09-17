@@ -8,17 +8,21 @@
     <body>
         <form style="margin: 20px;">
             <div id="step1">
-                <h3>Step 1 - Insert your API Key and retrieve both preautorization link and list of users that are preauthorized</h3>
+                <h3>Step 1 - Insert your API Key and retrieve preautorization link for your user</h3>
+                <p>
                 <label for="userid">Shop API Key</label><input type="text" id="uniquekey" size="200" value=""/>
-                <button type="button" onclick="javascript:loadpreauthorizedusers()">Send</button>
-                <a id="alink"></a>
+                </p>    
+                <p>
+                <label for="userid">External User Id</label><input type="text" id="externaluserid" size="200" value=""/>
+                </p>
+                <button type="button" onclick="javascript:getauthorizationlink()">Send</button>
+                <br><a id="alink" target="_blank"></a>
             </div>
             <br>
             <br>
             <br>
             <div id="step2" style="display: none;">
-                <h3>Step 2 - Choose a user and set amount that will be preauthorized, this will return a token to identify this preauthorization</h3>
-                <label for="userid">UserId</label><select id="userid"/>
+                <h3>Step 2 - After scan previous link and activate the preautorization, Set amount that will be preauthorized, this will return a token to identify this preauthorization</h3>
                 <label for="amount">Amount</label><input type="text" id="amount" value="50"/>
                 <button type="button" onclick="javascript:preauthtransaction()">Send</button>
             </div>
@@ -34,34 +38,19 @@
             </div>
         </form>
           <script lang="javascript">
-              function loadpreauthorizedusers()
+              function getauthorizationlink()
               {
-
-                $.post( "demo.php", { action: "getpreauthlink",  uniquekey: $('#uniquekey').val(), returnUrl: window.location.protocol + '://' + window.location.hostname + '/demo.php?action=preauth' })
+                $.post( "demo.php", { action: "getpreauthlink",  uniquekey: $('#uniquekey').val(), externalUserId: $('#externaluserid').val(), returnUrl: window.location.protocol + '//' + window.location.hostname + '/demo.php?action=preauth' })
                 .done(function( data ) {
                     $('#alink').attr('href', data.link);
                     $('#alink').text(data.link);
+                    $('#step2').show();
                 });
-                $.post( "demo.php", { action: "loadpreauthorizedusers", uniquekey: $('#uniquekey').val() })
-                .done(function( data ) {
-                    if(data.result)
-                    {
-                        $.each(data.users, function(ix, user){
-                            $('#userid').append(new Option(user.ShortName, user.UserId));
-                        });
-                        $('#step2').show();
-                    }
-                    else
-                    {
-                        alert(data.result_text);
-                    }
-                    
-                });
-
               }
+             
               function preauthtransaction()
               {
-                $.post( "demo.php", { action: "preauthorizetransaction", uniquekey: $('#uniquekey').val(), userId: $('#userid').val() , amount: $('#amount').val() })
+                $.post( "demo.php", { action: "preauthorizetransaction", uniquekey: $('#uniquekey').val(), externalUserId: $('#externaluserid').val() , amount: $('#amount').val() })
                 .done(function( data ) {
                     if(data.result)
                     {
@@ -74,12 +63,11 @@
                         alert(data.result_text);
                     }
                 });
-
               }
 
               function capturetransaction()
               {
-                $.post( "demo.php", { action: "capturetransaction", uniquekey: $('#uniquekey').val(), token: $('#token').val(),  userId: $('#userid').val(), amount: $('#finalamount').val() })
+                $.post( "demo.php", { action: "capturetransaction", uniquekey: $('#uniquekey').val(), token: $('#token').val(),  externalUserId: $('#externaluserid').val() , amount: $('#finalamount').val() })
                 .done(function( data ) {
                     if(data.result)
                     {
@@ -90,11 +78,11 @@
                         alert(data.result_text);
                     }
                 });
-
               }
+
               function canceltransaction()
               {
-                $.post( "demo.php", { action: "canceltransaction", uniquekey: $('#uniquekey').val(), token: $('#token').val(),  userId: $('#userid').val() })
+                $.post( "demo.php", { action: "canceltransaction", uniquekey: $('#uniquekey').val(), token: $('#token').val(), externalUserId: $('#externaluserid').val()})
                 .done(function( data ) {
                     if(data.result)
                     {
@@ -104,6 +92,25 @@
                     {
                         alert(data.result_text);
                     }
+                });
+
+              }
+
+              function loadpreauthorizedusers()
+              {
+                $.post( "demo.php", { action: "loadpreauthorizedusers", uniquekey: $('#uniquekey').val() })
+                .done(function( data ) {
+                    if(data.result)
+                    {
+                        $.each(data.users, function(ix, user){
+                            $('#userid').append(new Option(user.ShortName, user.UserId));
+                        });
+                    }
+                    else
+                    {
+                        alert(data.result_text);
+                    }
+                    
                 });
 
               }

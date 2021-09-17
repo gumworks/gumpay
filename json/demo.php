@@ -42,11 +42,11 @@ if(isset($_POST['action']))
             case 'getpreauthlink':
                 {
                     $gumpayHelper = new GumPayApp2AppHelper();
-                    $url = $gumpayHelper->GetPreauthLink($_POST['uniquekey'], $_POST['returnUrl'], 60);
+                    $result = $gumpayHelper->GetPreauthLink($_POST['uniquekey'], $_POST['externalUserId'], $_POST['returnUrl'], 60);
                     header('Content-type: application/json');
-                    if($url)
+                    if($result->Success)
                     {
-                        echo json_encode(array("result"=> true, "link"=> $url));
+                        echo json_encode(array("result"=> true, "link"=> $result->Url));
                     }
                     else
                     {
@@ -57,11 +57,11 @@ if(isset($_POST['action']))
             case 'preauthorizetransaction':
                 {
                     $gumpayHelper = new GumPayApp2AppHelper();
-                    $token = $gumpayHelper->PreauthorizeTransaction($_POST['uniquekey'], $_POST['userId'], 'HKD', $_POST['amount']);
+                    $result = $gumpayHelper->PreauthorizeTransaction($_POST['uniquekey'], $_POST['externalUserId'], 'HKD', $_POST['amount']);
                     header('Content-type: application/json');
-                    if($token)
+                    if($result->Success)
                     {
-                        echo json_encode(array("result"=> true, "token"=> $token));
+                        echo json_encode(array("result"=> true, "token"=> $result->Token));
                     }
                     else
                     {
@@ -72,11 +72,11 @@ if(isset($_POST['action']))
             case 'capturetransaction':
                 {
                     $gumpayHelper = new GumPayApp2AppHelper();
-                    $result = $gumpayHelper->CaptureTransaction($_POST['uniquekey'], $_POST['userId'],$_POST['token'], 'HKD', $_POST['amount']);
+                    $result = $gumpayHelper->CaptureTransaction($_POST['uniquekey'], $_POST['externalUserId'], $_POST['token'], 'HKD', $_POST['amount']);
                     header('Content-type: application/json');
-                    if($result)
+                    if($result->Success)
                     {
-                        echo json_encode(array("result"=> true));
+                        echo json_encode(array("result"=> $result->Captured));
                     }
                     else
                     {
@@ -87,11 +87,11 @@ if(isset($_POST['action']))
             case 'canceltransaction':
                 {
                     $gumpayHelper = new GumPayApp2AppHelper();
-                    $result = $gumpayHelper->CancelTransaction($_POST['uniquekey'], $_POST['userId'],$_POST['token']);
+                    $result = $gumpayHelper->CancelTransaction($_POST['uniquekey'], $_POST['externalUserId'], $_POST['token']);
                     header('Content-type: application/json');
-                    if($result)
+                    if($result->Success)
                     {
-                        echo json_encode(array("result"=> true));
+                        echo json_encode(array("result"=> $result->Cancelled));
                     }
                     else
                     {

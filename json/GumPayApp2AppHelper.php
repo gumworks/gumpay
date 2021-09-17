@@ -1,7 +1,8 @@
 <?php
 class GumPayApp2AppHelper
 {
-    public const GUMPAY_ENVIRONMENT_URL = 'https://api.gumpay.app/';
+   // public const GUMPAY_ENVIRONMENT_URL = 'https://api.gumpay.app/';
+   public const GUMPAY_ENVIRONMENT_URL = 'https://gumpayapilocal.gumwork.com/';
 
     /// <summary>
     /// GetOrderLink return a GumPay url that allow user to pay our order. This url can be used in Android/IOS and it will launch GumPay app if it is installed or open a landing page where user can download app and process payment
@@ -102,10 +103,11 @@ class GumPayApp2AppHelper
     /// GetPreauthLink return a GumPay url that allow user to authorize automatic payments on current shop. This url can be used in Android/IOS and it will launch GumPay app if it is installed or open a landing page where user can download app and authorize payments
     /// </summary>
     /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
+    /// <param name="externalUserId">ExternalUserId in your system you are requesting preauthorization for</param>
     /// <param name="returnUrl">This is the callback url that GumPay app will call once preauth completed. It can be our deep app link url like in this example, or some backend url where we will check the payment. We recomend will return in this url a parameter "userid" that will containe the GumPay userid that preautorized payments for your shop</param>
     /// <param name="minutesToExpire">This is the minutes that link/qr will be valid</param>
     /// <returns>Returns string containing the url we need redirect user to</returns>
-    public function GetPreauthLink($uniqueKey, $returnUrl, $minutesToExpire)
+    public function GetPreauthLink($uniqueKey, $externalUserId, $returnUrl, $minutesToExpire)
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/getpreauthlink";
         $curl = new \CurlPost($endpointUrl);
@@ -113,13 +115,14 @@ class GumPayApp2AppHelper
         // execute the request
         $responseStr = $curl(array(
             "uniqueKey" => $uniqueKey,
+            "externalUserId" => $externalUserId,
             "returnUrl" => $returnUrl,
             "minutesToExpire" => $minutesToExpire,
         ));
         $response = json_decode($responseStr);
         if ($response->Success)
         {
-            return $response->Data;
+            return $response;
         }
         else
         {
@@ -130,25 +133,25 @@ class GumPayApp2AppHelper
     /// PreauthorizeTransaction
     /// </summary>
     /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
-    /// <param name="userId"></param>
+    /// <param name="externalUserId">ExternalUserId in your system you are requesting preauthorization for</param>
     /// <param name="currency">For now, only 'HKD' supported</param>
     /// <param name="amount"></param>
     /// <returns>Returns string containing the token for the transaction</returns>
-    public function PreauthorizeTransaction($uniqueKey, $userId, $currency, $amount)
+    public function PreauthorizeTransaction($uniqueKey, $externalUserId, $currency, $amount)
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/preauthorizetransaction";
         $curl = new \CurlPost($endpointUrl);
         // execute the request
         $responseStr = $curl(array(
             "uniqueKey" => $uniqueKey,
-            "userId" => $userId,
+            "externalUserId" => $externalUserId,
             "currency" => $currency,
             "amount" => $amount,
         ));
         $response = json_decode($responseStr);
         if ($response->Success)
         {
-            return $response->Data;
+            return $response;
         }
         else
         {
@@ -159,19 +162,19 @@ class GumPayApp2AppHelper
     /// PreauthorizeTransaction
     /// </summary>
     /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
-    /// <param name="userId"></param>
-    /// <param name="token"></param>
+    /// <param name="externalUserId">ExternalUserId in your system you are requesting preauthorization for</param>
+    /// <param name="token">Token of the preautorized transaction we want to capture</param>
     /// <param name="currency">For now, only 'HKD' supported</param>
     /// <param name="amount"></param>
     /// <returns>Returns string containing the token for the transaction</returns>
-    public function CaptureTransaction($uniqueKey, $userId, $token, $currency, $amount)
+    public function CaptureTransaction($uniqueKey, $externalUserId, $token, $currency, $amount)
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/capturetransaction";
         $curl = new \CurlPost($endpointUrl);
         // execute the request
         $responseStr = $curl(array(
             "uniqueKey" => $uniqueKey,
-            "userId" => $userId,
+            "externalUserId" => $externalUserId,
             "token" => $token,
             "currency" => $currency,
             "amount" => $amount,
@@ -179,7 +182,7 @@ class GumPayApp2AppHelper
         $response = json_decode($responseStr);
         if ($response->Success)
         {
-            return $response->Data;
+            return $response;
         }
         else
         {
@@ -190,23 +193,22 @@ class GumPayApp2AppHelper
     /// CancelTransaction
     /// </summary>
     /// <param name="uniqueKey">Shop unique apikey provided by GumPay Team</param>
-    /// <param name="userId"></param>
-    /// <param name="token"></param>
+    /// <param name="token">Token of the preautorized transaction we want to release</param>
     /// <returns>Returns string containing the token for the transaction</returns>
-    public function CancelTransaction($uniqueKey, $userId, $token)
+    public function CancelTransaction($uniqueKey, $externalUserId, $token)
     {
         $endpointUrl = $this::GUMPAY_ENVIRONMENT_URL . "api/order/canceltransaction";
         $curl = new \CurlPost($endpointUrl);
         // execute the request
         $responseStr = $curl(array(
             "uniqueKey" => $uniqueKey,
-            "userId" => $userId,
+            "externalUserId" => $externalUserId,
             "token" => $token,
         ));
         $response = json_decode($responseStr);
         if ($response->Success)
         {
-            return $response->Data;
+            return $response;
         }
         else
         {
@@ -229,7 +231,7 @@ class GumPayApp2AppHelper
         $response = json_decode($responseStr);
         if ($response->Success)
         {
-            return $response->Data;
+            return $response;
         }
         else
         {

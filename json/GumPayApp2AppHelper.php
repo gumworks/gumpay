@@ -1,8 +1,8 @@
 <?php
 class GumPayApp2AppHelper
 {
-   // public const GUMPAY_ENVIRONMENT_URL = 'https://api.gumpay.app/';
-   public const GUMPAY_ENVIRONMENT_URL = 'https://gumpayapilocal.gumwork.com/';
+    public const GUMPAY_ENVIRONMENT_URL = 'https://api.gumpay.app/';
+  
 
     /// <summary>
     /// GetOrderLink return a GumPay url that allow user to pay our order. This url can be used in Android/IOS and it will launch GumPay app if it is installed or open a landing page where user can download app and process payment

@@ -65,59 +65,66 @@
               $('#returnurl').val(window.location.protocol + '//' + window.location.hostname + '/demo.php?action=preauth');
               function getauthorizationlink()
               {
-                $.post( "demo.php", { action: "getpreauthlink",  uniquekey: $('#uniquekey').val(), externalUserId: $('#externaluserid').val(), returnUrl: $('#returnurl').val(), minutesToExpire: $('#minutextoexpire').val() })
+                $.post( "https://api.gumpay.app/api/order/getpreauthlink", {  uniquekey: $('#uniquekey').val(), externalUserId: $('#externaluserid').val(), returnUrl: $('#returnurl').val(), minutesToExpire: $('#minutextoexpire').val() })
                 .done(function( data ) {
-                    $('#alink').attr('href', data.link);
-                    $('#alink').text(data.link);
-                    $('#externaluserid2').val($('#externaluserid').val());
-                    $('#externaluserid3').val($('#externaluserid').val());
-                    $('#step2').show();
+                    if(data.Success)
+                    {
+                        $('#alink').attr('href', data.Url);
+                        $('#alink').text(data.Url);
+                        $('#externaluserid2').val($('#externaluserid').val());
+                        $('#externaluserid3').val($('#externaluserid').val());
+                        $('#step2').show();
+                    }
+                    else
+                    {
+                        alert(data.StatusMessage);
+                    }
                 });
               }
              
               function preauthtransaction()
               {
-                $.post( "demo.php", { action: "preauthorizetransaction", uniquekey: $('#uniquekey').val(), externalUserId: $('#externaluserid').val() , amount: $('#amount').val() })
+                $.post( "https://api.gumpay.app/api/order/preauthorizetransaction", { uniquekey: $('#uniquekey').val(), externalUserId: $('#externaluserid').val() , amount: $('#amount').val() })
                 .done(function( data ) {
-                    if(data.result)
+                    if(data.Success)
                     {
-                        alert('Preauthorization Token Received: '  + data.token);
-                        $('#token').val(data.token);
+                        alert('Preauthorization Token Received: '  + data.Token);
+                        $('#token').val(data.Token);
                         $('#step3').show();
                     }
                     else
                     {
-                        alert(data.result_text);
+                        alert(data.StatusMessage);
                     }
                 });
               }
 
               function capturetransaction()
               {
-                $.post( "demo.php", { action: "capturetransaction", uniquekey: $('#uniquekey').val(), token: $('#token').val(),  externalUserId: $('#externaluserid').val() , amount: $('#finalamount').val() })
+                $.post( "https://api.gumpay.app/api/order/capturetransaction", { uniquekey: $('#uniquekey').val(), token: $('#token').val(),  externalUserId: $('#externaluserid').val() , amount: $('#finalamount').val() })
                 .done(function( data ) {
-                    if(data.result)
+                    if(data.Success)
                     {
                         alert("Transaction Captured, Payment processed OK!");
                     }
                     else
                     {
-                        alert(data.result_text);
+                        alert(data.StatusMessage);
                     }
                 });
               }
 
               function canceltransaction()
               {
-                $.post( "demo.php", { action: "canceltransaction", uniquekey: $('#uniquekey').val(), token: $('#token').val(), externalUserId: $('#externaluserid').val()})
+                $.post( "https://api.gumpay.app/api/order/canceltransaction", { uniquekey: $('#uniquekey').val(), token: $('#token').val(), externalUserId: $('#externaluserid').val()})
                 .done(function( data ) {
-                    if(data.result)
+                    if(data.Success)
                     {
                         alert("Preauthorized transaction canceled OK!");
                     }
                     else
                     {
-                        alert(data.result_text);
+                        alert(data.StatusMessage);
                     }
                 });
 
@@ -125,9 +132,9 @@
 
               function loadpreauthorizedusers()
               {
-                $.post( "demo.php", { action: "loadpreauthorizedusers", uniquekey: $('#uniquekey').val() })
+                $.post( "https://api.gumpay.app/api/order/getpreauthorizedusers", { uniquekey: $('#uniquekey').val() })
                 .done(function( data ) {
-                    if(data.result)
+                    if(data.Success)
                     {
                         $.each(data.users, function(ix, user){
                             $('#userid').append(new Option(user.ShortName, user.UserId));
@@ -135,7 +142,7 @@
                     }
                     else
                     {
-                        alert(data.result_text);
+                        alert(data.StatusMessage);
                     }
                     
                 });
